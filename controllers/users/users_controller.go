@@ -1,9 +1,7 @@
 package users
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/farazmunj/bookstore_users-api/domain/users"
@@ -15,18 +13,10 @@ import (
 func CreateUser(c *gin.Context) {
 	var user users.User
 
-	bytes, err := ioutil.ReadAll(c.Request.Body)
-	if nil != err {
-		//TODO: handle error
+	if err := c.ShouldBindJSON(&user); nil != err {
+		fmt.Printf("User Json.Unmarshal error: %+v", err.Error())
 		return
 	}
-	if err := json.Unmarshal(bytes, &user); nil != err {
-		// TODO: unmarshal error
-		fmt.Println(err.Error())
-	}
-	fmt.Printf("User: %+v", user)
-	fmt.Println(err)
-	fmt.Println(string(bytes))
 
 	result, saveErr := services.CreateUser(user)
 	if nil != saveErr {
