@@ -6,6 +6,7 @@ import (
 
 	"github.com/farazmunj/bookstore_users-api/domain/users"
 	"github.com/farazmunj/bookstore_users-api/services"
+	"github.com/farazmunj/bookstore_users-api/utils/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +16,12 @@ func CreateUser(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&user); nil != err {
 		fmt.Printf("User Json.Unmarshal error: %+v", err.Error())
+		restErr := errors.RestErr{
+			Message: "Invalid json Body",
+			Status:  http.StatusBadRequest,
+			Error:   "bad_request",
+		}
+		c.JSON(restErr.Status, restErr)
 		return
 	}
 
